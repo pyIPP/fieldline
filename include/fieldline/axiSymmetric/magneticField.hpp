@@ -42,7 +42,7 @@ namespace fieldline {
 
                 virtual ~magneticField() {}
 
-                fieldline::core::magneticField get_magnetic_field(const double R, const double z) const {
+                fieldline::core::magneticFlux get_magnetic_flux(const double R, const double z) const {
                     if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
                         throw fieldline::exceptions::undefinedMagneticField;
                     }
@@ -85,7 +85,12 @@ namespace fieldline {
                         b3 += m_a3[i]*(dzdy[i+1]-dzdy[0]);
                     }
                     PF[2] = dzdy[0] + b1*x + b2*x2 + b3*x3;
-                    return fieldline::core::magneticField(-(PF[2]/m_dz/(2.0*M_PI*R)), PF[1]/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
+                    return fieldline::core::magneticFlux(PF[0], PF[2], PF[1]);
+                }
+
+                fieldline::core::magneticField get_magnetic_field(const double R, const double z) const {
+                    fieldline::core::magneticFlux temp = get_magnetic_flux(R,z);
+                    return fieldline::core::magneticField(-(temp.dpsi_dR/m_dz/(2.0*M_PI*R)), temp.dpsi_dz/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
                 }
 
                 void write_ASCII_matrix(const std::string & filename) const {
