@@ -36,8 +36,22 @@ void testMagneticField() {
     file.close();
 }
 
+void testTarget() {
+    Fieldline::core::target target("outer_target_curve.txt");
+    target.save_to_file("newTarget.txt");
+}
+
+void testLine() {
+    Fieldline::core::line line1(0,0,1,1);
+    Fieldline::core::line line2(0,1,1,0);
+    Fieldline::core::point point = line1.intersection(line2);
+    std::cout << point << '\n';
+}
+
 int main() {
     testMagneticField();
+    testTarget();
+    testLine();
     return EXIT_SUCCESS;
 }
 
