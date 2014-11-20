@@ -16,11 +16,8 @@ namespace fieldline {
     namespace axiSymmetric {
         class magneticField {
             private: 
-                // a1=  (/              3.0D0,-1.5D0,  1.0D0/3.0D0 /)
                 const double m_a1[3] = {3.0,  -1.5,    1.0/3.0};
-                // a2=  (/              -2.5D0, 2.0D0, -0.5D0       /)
                 const double m_a2[3] = {-2.5,   2.0,   -0.5};
-                // a3 = (/              0.5D0,-0.5D0,  1.0D0/6.0D0 /)
                 const double m_a3[3] = {0.5,  -0.5,    1.0/6.0};
             public:
                 magneticField() {}
@@ -42,7 +39,7 @@ namespace fieldline {
 
                 virtual ~magneticField() {}
 
-                fieldline::core::magneticFlux get_magnetic_flux(const double R, const double z) const {
+                fieldline::core::magneticFlux get_magnetic_flux(const double R, const double z, const double phi) const {
                     if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
                         throw fieldline::exceptions::undefinedMagneticField;
                     }
@@ -88,8 +85,8 @@ namespace fieldline {
                     return fieldline::core::magneticFlux(PF[0], PF[2], PF[1]);
                 }
 
-                fieldline::core::magneticField get_magnetic_field(const double R, const double z) const {
-                    fieldline::core::magneticFlux temp = get_magnetic_flux(R,z);
+                fieldline::core::magneticField get_magnetic_field(const double R, const double z, const double phi) const {
+                    fieldline::core::magneticFlux temp = get_magnetic_flux(R,z,phi);
                     return fieldline::core::magneticField(-(temp.dpsi_dR/m_dz/(2.0*M_PI*R)), temp.dpsi_dz/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
                 }
 

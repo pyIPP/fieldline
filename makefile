@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -std=c++11 
+FLAGS = -std=c++11 #-O3 -march=native -m64
 LIBS = -lm -lstdc++ -L$(HOME)/local/lib
 INC = -I./include -I$(HOME)/local/include
 

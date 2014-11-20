@@ -4,5 +4,6 @@
 #include <fieldline/core.hpp>
 #include <fieldline/exceptions.hpp>
 #include <fieldline/axiSymmetric.hpp>
+#include <fieldline/trace.hpp>
 
 #endif
