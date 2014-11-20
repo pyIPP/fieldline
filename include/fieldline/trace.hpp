@@ -3,6 +3,7 @@
 
 #include <fieldline/trace/rungeKutta.hpp>
 #include <fieldline/trace/stopCriterionSteps.hpp>
+#include <fieldline/trace/stopCriterionTarget.hpp>
 #include <fieldline/trace/fieldline.hpp>
 
 #endif

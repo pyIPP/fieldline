@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <fieldline/core/point.hpp>
+#include <fieldline/core/line.hpp>
 
 namespace Fieldline {
     namespace core {
@@ -52,13 +55,34 @@ namespace Fieldline {
                     file.close();
                 }
 
-                bool intersection(const double R0, const double z0, const double R1, const double z1) const {
-                    double f1, f2;
-                    double x, y;
-                    double dR, dz;
-                    uint32_t i,j;
-                    dR = R1 - R0;
-                    dz = z1 - z0;
+                Fieldline::core::point intersection(const double R0, const double z0, const double R1, const double z1) const {
+                    return intersection(Fieldline::core::line(R0, z0, R1, z1));
+                }
+
+                Fieldline::core::point intersection(const Fieldline::core::line & line) const {
+                    Fieldline::core::point temp;
+                    std::vector<Fieldline::core::point> points;
+                    for(uint32_t i = 0; i < m_R.size()-1; ++i) {
+                        temp = line.intersection(Fieldline::core::line(m_R[i], m_z[i], m_R[i+1], m_z[i+1]));
+                        if(temp.hit) {
+                            points.push_back(temp);
+                        }
+                    }
+                    switch(points.size()) {
+                        case 0:
+                            return Fieldline::core::point(0,0,false);
+                        case 1:
+                            return points[0];
+                        default:
+                            temp.R = line.get_R0();
+                            temp.z = line.get_z0();
+                            std::vector<double> distance;
+                            for(auto iter = points.cbegin(); iter != points.cend(); ++iter) {
+                                distance.push_back(iter->distance(temp));
+                            }
+                            uint32_t i = std::distance(distance.cbegin(), std::min_element(distance.cbegin(), distance.cend()));
+                            return points[i];
+                    }
                 }
 
             protected:

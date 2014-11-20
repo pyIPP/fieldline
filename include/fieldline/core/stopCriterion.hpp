@@ -7,7 +7,7 @@ namespace Fieldline {
     namespace core {
         class stopCriterion {
             public:
-                virtual bool reached(const fieldline * rhs) = 0;
+                virtual bool reached(fieldline * rhs) = 0;
         };
     }
 }

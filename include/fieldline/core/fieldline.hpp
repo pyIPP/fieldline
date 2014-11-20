@@ -5,6 +5,7 @@
 #include <math.h>
 #include <fstream>
 #include <string.h>
+#include <fieldline/core/line.hpp>
 
 namespace Fieldline {
     namespace core {
@@ -86,6 +87,24 @@ namespace Fieldline {
                     }
                     file.close();
                 }
+                Fieldline::core::line get_end() const {
+                    uint32_t N = m_R.size();
+                    return Fieldline::core::line(m_R[N-2], m_z[N-2], m_R[N-1], m_z[N-1]);
+                }
+                void replace_end(const double R, const double z) {
+                    uint32_t N = m_R.size();
+                    double dR0 = m_R[N-2]-R;
+                    double dz0 = m_z[N-2]-z;
+                    double dR1 = m_R[N-2]-m_R[N-1];
+                    double dz1 = m_z[N-2]-m_z[N-1];
+                    double d0 = sqrt(dR0*dR0 + dz0*dz0);
+                    double d1 = sqrt(dR1*dR1 + dz1*dz1);
+                    m_R[N-1] = R;
+                    m_z[N-1] = z;
+                    m_Btot[N-1] = m_Btot[N-2] + d0/d1*(m_Btot[N-1]-m_Btot[N-2]);
+                    m_phi[N-1] = m_phi[N-2] + d0/d1*(m_phi[N-1]-m_phi[N-2]);
+                }
+
 
                 
 

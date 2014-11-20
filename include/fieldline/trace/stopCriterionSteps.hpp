@@ -8,7 +8,7 @@ namespace Fieldline {
         class stopCriterionSteps : public Fieldline::core::stopCriterion {
             public:
                 stopCriterionSteps(const uint32_t N) : m_N(N){}
-                virtual bool reached(const Fieldline::core::fieldline * rhs) {
+                virtual bool reached(Fieldline::core::fieldline * rhs) {
                     return rhs->size() >= m_N;
                 }
             protected:

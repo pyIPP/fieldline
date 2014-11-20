@@ -39,6 +39,10 @@ void testMagneticField() {
 void testTarget() {
     Fieldline::core::target target("outer_target_curve.txt");
     target.save_to_file("newTarget.txt");
+    Fieldline::axiSymmetric::magneticField equilibrium(-2.5, 1.65, "psi.txt");
+    Fieldline::trace::stopCriterionTarget stopCriterion(target, 10000);
+    Fieldline::trace::fieldline fieldline(&equilibrium, 2.1183, 0.0, 0.0, -0.01, &stopCriterion);
+    fieldline.write_ASCII("fieldlineTestTarget.txt");
 }
 
 void testLine() {

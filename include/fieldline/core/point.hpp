@@ -2,6 +2,7 @@
 #define include_fieldline_core_point_hpp
 
 #include <iostream>
+#include <math.h>
 
 namespace Fieldline {
     namespace core {
@@ -24,6 +25,9 @@ namespace Fieldline {
                 double R;
                 double z;
                 bool hit;
+                double distance(const point & rhs) const {
+                    return sqrt(pow(R-rhs.R,2) + pow(z-rhs.z,2));
+                }
         };
 
         std::ostream & operator<< (std::ostream & out, const point & rhs) {

@@ -34,6 +34,8 @@ namespace Fieldline {
                     double y = Dy/D;
                     return Fieldline::core::point(m_R0 + x*m_dR, m_z0 + x*m_dz, (x >= 0.0) && (x <= 1.0) && (y >= 0.0) && (y <= 1.0));
                 }
+                inline double get_R0() const { return m_R0; }
+                inline double get_z0() const { return m_z0; }
             protected:
                 double m_R0;
                 double m_z0;
