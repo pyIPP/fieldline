@@ -1,7 +1,7 @@
 #ifndef include_fieldline_core_magneticFlux_hpp
 #define include_fieldline_core_magneticFlux_hpp
 
-namespace fieldline {
+namespace Fieldline {
     namespace core {
         class magneticFlux {
             public:

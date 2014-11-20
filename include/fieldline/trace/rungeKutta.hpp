@@ -6,7 +6,7 @@
 #include <fieldline/exceptions.hpp>
 #include <fieldline/axiSymmetric.hpp>
 
-namespace fieldline {
+namespace Fieldline {
     namespace trace {
         class rungeKutta {
             private:
@@ -15,11 +15,11 @@ namespace fieldline {
                 const double m_cm[4] = {-3.0/8.0, 3.7e1/2.4e1, -5.9e1/2.4e1,5.5e1/2.4e1};
                 const double m_fm[5] = {-1.9/7.2e1, 5.3/3.6e1,-1.1/3.0, 1.615e1/1.8e1, 2.51e1/7.2e1};
             public:
-                rungeKutta(fieldline::axiSymmetric::magneticField * magneticField) : m_magneticField(magneticField), m_initialized(false) {}
+                rungeKutta(Fieldline::axiSymmetric::magneticField * magneticField) : m_magneticField(magneticField), m_initialized(false) {}
                 virtual ~rungeKutta() {}
 
                 void init(const double R, const double z, const double phi, const double dphi) {
-                    fieldline::core::magneticField magneticField;
+                    Fieldline::core::magneticField magneticField;
                     double qR[4];
                     double qz[4];
                     double fa[4];
@@ -56,9 +56,9 @@ namespace fieldline {
                 }
                 void next(const uint32_t nSteps, const double dphi) {
                     if(!m_initialized) {
-                        throw fieldline::exceptions::traceNotInitialized;
+                        throw Fieldline::exceptions::traceNotInitialized;
                     }
-                    fieldline::core::magneticField magneticField;
+                    Fieldline::core::magneticField magneticField;
                     double tempR;
                     double tempz;
                     for(uint32_t i = 0; i < nSteps; ++i) {
@@ -92,7 +92,7 @@ namespace fieldline {
 
 
             protected:
-                fieldline::axiSymmetric::magneticField * m_magneticField;
+                Fieldline::axiSymmetric::magneticField * m_magneticField;
                 bool m_initialized;
                 double m_phi;
                 double m_R;

@@ -3,7 +3,7 @@
 
 #include <exception>
 
-namespace fieldline {
+namespace Fieldline {
     namespace exceptions {
         class traceNotInitialized : public std::exception {
             public:

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <math.h>
 #include <stdint.h>
+#include <exception>
 #include <fieldline/exceptions.hpp>
 #include <fieldline/core/magneticField.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
@@ -12,7 +13,7 @@
 #include <fstream>
 #include <string.h>
 
-namespace fieldline {
+namespace Fieldline {
     namespace axiSymmetric {
         class magneticField {
             private: 
@@ -39,9 +40,9 @@ namespace fieldline {
 
                 virtual ~magneticField() {}
 
-                fieldline::core::magneticFlux get_magnetic_flux(const double R, const double z, const double phi) const {
+                Fieldline::core::magneticFlux get_magnetic_flux(const double R, const double z, const double phi) const {
                     if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
-                        throw fieldline::exceptions::undefinedMagneticField;
+                        throw Fieldline::exceptions::undefinedMagneticField();
                     }
                     double x = (R - m_Rmin)/m_dR;
                     double y = (z - m_zmin)/m_dz;
@@ -82,12 +83,12 @@ namespace fieldline {
                         b3 += m_a3[i]*(dzdy[i+1]-dzdy[0]);
                     }
                     PF[2] = dzdy[0] + b1*x + b2*x2 + b3*x3;
-                    return fieldline::core::magneticFlux(PF[0], PF[2], PF[1]);
+                    return Fieldline::core::magneticFlux(PF[0], PF[2], PF[1]);
                 }
 
-                fieldline::core::magneticField get_magnetic_field(const double R, const double z, const double phi) const {
-                    fieldline::core::magneticFlux temp = get_magnetic_flux(R,z,phi);
-                    return fieldline::core::magneticField(-(temp.dpsi_dR/m_dz/(2.0*M_PI*R)), temp.dpsi_dz/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
+                Fieldline::core::magneticField get_magnetic_field(const double R, const double z, const double phi) const {
+                    Fieldline::core::magneticFlux temp = get_magnetic_flux(R,z,phi);
+                    return Fieldline::core::magneticField(-(temp.dpsi_dR/m_dz/(2.0*M_PI*R)), temp.dpsi_dz/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
                 }
 
                 void write_ASCII_matrix(const std::string & filename) const {

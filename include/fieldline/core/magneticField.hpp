@@ -5,7 +5,7 @@
 #include <iostream>
 #include <math.h>
 
-namespace fieldline {
+namespace Fieldline {
     namespace core {
         class magneticField {
             public:
