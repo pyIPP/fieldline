@@ -62,6 +62,26 @@ BOOST_PYTHON_MODULE(Fieldline) {
         .add_property("z", &Fieldline::core::target::get_z_python)
         ;
 
+    class_<Fieldline::core::fieldline>("fieldline")
+        .def(init<Fieldline::core::fieldline>())
+        .def(init<boost::python::list, boost::python::list, boost::python::list, boost::python::list>())
+        .add_property("size", &Fieldline::core::fieldline::size)
+        .def("push_back", &Fieldline::core::fieldline::push_back)
+        .add_property("length", &Fieldline::core::fieldline::get_length)
+        .add_property("lastR", &Fieldline::core::fieldline::get_last_R)
+        .add_property("lastz", &Fieldline::core::fieldline::get_last_z)
+        .add_property("end", &Fieldline::core::fieldline::get_end)
+        .add_property("x", &Fieldline::core::fieldline::get_x_python)
+        .add_property("y", &Fieldline::core::fieldline::get_y_python)
+        .add_property("z", &Fieldline::core::fieldline::get_z_python)
+        .add_property("R", &Fieldline::core::fieldline::get_R_python)
+        .add_property("phi", &Fieldline::core::fieldline::get_phi_python)
+        .add_property("Btot", &Fieldline::core::fieldline::get_Btot_python)
+        .def("write_to_file", &Fieldline::core::fieldline::write_to_file)
+        .def("read_from_file", &Fieldline::core::fieldline::read_from_file)
+        .def("replace_end", &Fieldline::core::fieldline::replace_end)
+        ;
+
 
 }
 

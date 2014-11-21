@@ -7,6 +7,10 @@
 #include <string.h>
 #include <fieldline/core/line.hpp>
 
+#ifdef WITH_PYTHON
+    #include <boost/python/list.hpp>
+#endif
+
 namespace Fieldline {
     namespace core {
         class fieldline {
@@ -15,6 +19,25 @@ namespace Fieldline {
                 fieldline(const fieldline & rhs) : m_R(rhs.m_R), m_z(rhs.m_z), m_phi(rhs.m_phi), m_Btot(rhs.m_Btot) {}
                 fieldline(const std::vector<double> R, const std::vector<double> z, const std::vector<double> phi, const std::vector<double> Btot) :
                     m_R(R), m_z(z), m_phi(phi), m_Btot(Btot) {}
+                fieldline(const std::string & filename) : m_R(), m_z(), m_phi(), m_Btot() {
+                    read_from_file(filename);
+                }
+#ifdef WITH_PYTHON
+                fieldline(const boost::python::list & R, const boost::python::list & z, const boost::python::list & phi, const boost::python::list & Btot) :
+                    m_R(), m_z(), m_phi(), m_Btot() {
+                    uint32_t N = boost::python::len(R);
+                    m_R.resize(N);
+                    m_z.resize(N);
+                    m_phi.resize(N);
+                    m_Btot.resize(N);
+                    for(uint32_t i = 0; i < N; ++i) {
+                        m_R[i] = boost::python::extract<double>(R[i]);
+                        m_z[i] = boost::python::extract<double>(z[i]);
+                        m_phi[i] = boost::python::extract<double>(phi[i]);
+                        m_Btot[i] = boost::python::extract<double>(Btot[i]);
+                    }
+                }
+#endif
                 virtual ~fieldline() {}
                 fieldline & operator= (const fieldline & rhs) {
                     if(this != &rhs){
@@ -65,6 +88,60 @@ namespace Fieldline {
                 std::vector<double> get_Btot() const {
                     return m_Btot;
                 }
+#ifdef WITH_PYTHON
+                boost::python::list get_x_python() const {
+                    std::vector<double> temp = get_x();
+                    boost::python::list output;
+                    for(auto iter = temp.cbegin(); iter != temp.cend(); ++iter) {
+                        output.append(*iter);
+                    }
+                    return output;
+                }
+
+                boost::python::list get_y_python() const {
+                    std::vector<double> temp = get_y();
+                    boost::python::list output;
+                    for(auto iter = temp.cbegin(); iter != temp.cend(); ++iter) {
+                        output.append(*iter);
+                    }
+                    return output;
+                }
+
+                boost::python::list get_z_python() const {
+                    std::vector<double> temp = get_z();
+                    boost::python::list output;
+                    for(auto iter = temp.cbegin(); iter != temp.cend(); ++iter) {
+                        output.append(*iter);
+                    }
+                    return output;
+                }
+
+                boost::python::list get_R_python() const{
+                    boost::python::list output;
+                    for(auto iter = m_R.cbegin(); iter != m_R.cend(); ++iter) {
+                        output.append(*iter);
+                    }
+                    return output;
+                }
+
+                boost::python::list get_phi_python() const{
+                    boost::python::list output;
+                    for(auto iter = m_phi.cbegin(); iter != m_phi.cend(); ++iter) {
+                        output.append(*iter);
+                    }
+                    return output;
+                }
+
+                boost::python::list get_Btot_python() const{
+                    boost::python::list output;
+                    for(auto iter = m_Btot.cbegin(); iter != m_Btot.cend(); ++iter) {
+                        output.append(*iter);
+                    }
+                    return output;
+                }
+
+#endif
+
                 double get_length() const {
                     double output = 0.0;
                     std::vector<double> x = get_x();
@@ -80,13 +157,32 @@ namespace Fieldline {
                 double get_last_z() const {
                     return m_z[m_z.size()-1];
                 }
-                void write_ASCII(const std::string & filename) const {
+                void write_to_file(const std::string & filename) const {
                     std::fstream file(filename.c_str(), std::ios::out);
+                    file << m_R.size() << '\n';
                     for(uint32_t i = 0; i < m_R.size(); ++i) {
                         file << m_R[i] << '\t' << m_z[i] << '\t' << m_phi[i] << '\t' << m_Btot[i] << '\n';
                     }
                     file.close();
                 }
+                void read_from_file(const std::string & filename) {
+                    std::fstream file(filename.c_str(), std::ios::in);
+                    uint32_t N;
+                    file >> N;
+                    m_R.resize(N);
+                    m_z.resize(N);
+                    m_phi.resize(N);
+                    m_Btot.resize(N);
+                    auto R = m_R.begin();
+                    auto z = m_z.begin();
+                    auto phi = m_phi.begin();
+                    auto Btot = m_Btot.begin();
+                    for( ; R != m_R.end(); ++R, ++z, ++phi, ++Btot) {
+                        file >> *R >> *z >> *phi >> *Btot;
+                    }
+                    file.close();
+                }
+
                 Fieldline::core::line get_end() const {
                     uint32_t N = m_R.size();
                     return Fieldline::core::line(m_R[N-2], m_z[N-2], m_R[N-1], m_z[N-1]);
@@ -105,8 +201,6 @@ namespace Fieldline {
                     m_phi[N-1] = m_phi[N-2] + d0/d1*(m_phi[N-1]-m_phi[N-2]);
                 }
 
-
-                
 
             protected:
                 std::vector<double> m_R;
