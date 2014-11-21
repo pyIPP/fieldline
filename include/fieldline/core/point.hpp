@@ -25,7 +25,7 @@ namespace Fieldline {
                 double R;
                 double z;
                 bool hit;
-                double distance(const point & rhs) const {
+                double get_distance(const point & rhs) const {
                     return sqrt(pow(R-rhs.R,2) + pow(z-rhs.z,2));
                 }
         };

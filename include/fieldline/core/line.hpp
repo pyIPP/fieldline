@@ -1,6 +1,7 @@
 #ifndef include_fieldline_core_line_hpp
 #define include_fieldline_core_line_hpp
 
+#include <math.h>
 #include <fieldline/core/point.hpp>
 
 namespace Fieldline {
@@ -9,6 +10,7 @@ namespace Fieldline {
             public:
                 line(const double R0, const double z0, const double R1, const double z1) : m_R0(R0), m_z0(z0), m_R1(R1), m_z1(z1), m_dR(R1-R0), m_dz(z1-z0) {}
                 line(const line & rhs) : m_R0(rhs.m_R0), m_z0(rhs.m_z0), m_R1(rhs.m_R1), m_z1(rhs.m_z1), m_dR(rhs.m_dR), m_dz(rhs.m_dz) {}
+                line(const Fieldline::core::point & p0, const Fieldline::core::point & p1) : m_R0(p0.R), m_z0(p0.z), m_R1(p1.R), m_z1(p1.z), m_dR(p1.R-p0.R), m_dz(p1.z-p0.z) {}
                 virtual ~line() {}
                 line & operator= (const line & rhs) {
                     if(this != &rhs) {
@@ -21,7 +23,7 @@ namespace Fieldline {
                     }
                     return *this;
                 }
-                Fieldline::core::point intersection(const line & rhs) const {
+                Fieldline::core::point get_intersection(const line & rhs) const {
                     double dR = rhs.m_R0 - m_R0;
                     double dz = rhs.m_z0 - m_z0;
                     double D = m_dR*(-rhs.m_dz) + rhs.m_dR*m_dz;
@@ -36,6 +38,11 @@ namespace Fieldline {
                 }
                 inline double get_R0() const { return m_R0; }
                 inline double get_z0() const { return m_z0; }
+                inline double get_R1() const { return m_R1; }
+                inline double get_z1() const { return m_z1; }
+                inline double get_length() const {
+                    return sqrt(m_dR*m_dR + m_dz*m_dz);
+                }
             protected:
                 double m_R0;
                 double m_z0;

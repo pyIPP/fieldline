@@ -12,7 +12,7 @@ namespace Fieldline {
                 stopCriterionTarget(const Fieldline::core::target & target, const uint32_t N) : m_target(target), m_N(N) {}
                 virtual bool reached(Fieldline::core::fieldline * fieldline)  {
                     if(fieldline->size() < 2) return false;
-                    Fieldline::core::point point = m_target.intersection(fieldline->get_end());
+                    Fieldline::core::point point = m_target.get_intersection(fieldline->get_end());
                     if(point.hit) {
                         fieldline->replace_end(point.R, point.z);
                         return true;

@@ -48,7 +48,7 @@ void testTarget() {
 void testLine() {
     Fieldline::core::line line1(0,0,1,1);
     Fieldline::core::line line2(0,1,1,0);
-    Fieldline::core::point point = line1.intersection(line2);
+    Fieldline::core::point point = line1.get_intersection(line2);
     std::cout << point << '\n';
 }
 
