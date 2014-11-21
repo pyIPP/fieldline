@@ -1,0 +1,8 @@
+OUTPUT_DIRECTORY=doc
+OUTPUT_LANGUAGE=German
+RECURSIVE=YES
+PROJECT_NAME=Fieldline
+INPUT = ./include
+
+
+
