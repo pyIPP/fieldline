@@ -82,6 +82,12 @@ BOOST_PYTHON_MODULE(Fieldline) {
         .def("replace_end", &Fieldline::core::fieldline::replace_end)
         ;
 
+    object axiSymmetricModule(handle<>(borrowed(PyImport_AddModule("Fieldline.axiSymmetric"))));
+    scope().attr("axiSymmetric") = axiSymmetricModule;
+    scope axiSymmetric_scope = axiSymmetricModule;
+
+    class_<Fieldline::axiSymmetric::magneticField>("magneticField")
+        ;
 
 }
 
