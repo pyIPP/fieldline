@@ -92,6 +92,10 @@ BOOST_PYTHON_MODULE(Fieldline) {
 	    scope axiSymmetric_scope = axiSymmetricModule;
 
 	    class_<Fieldline::axiSymmetric::magneticField>("magneticField")
+		.def(init<double, double, std::string>())
+		.def("get_magnetic_flux", &Fieldline::axiSymmetric::magneticField::get_magnetic_flux)
+		.def("get_magnetic_field", &Fieldline::axiSymmetric::magneticField::get_magnetic_field)
+		.def("write_ASCII_matrix", &Fieldline::axiSymmetric::magneticField::write_ASCII_matrix)
 		;
 	}
 
