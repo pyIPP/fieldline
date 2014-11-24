@@ -151,7 +151,7 @@ namespace Fieldline {
                     deltaX = DL*DDDR;
                     deltaY = DL*DDDz;
 
-                    exist = pow((deltaX*m_dR),2)+pow((deltaY*m_dz),2) < 1.0e-12;
+                    exist = pow((deltaX*m_dR),2)+pow((deltaY*m_dz),2) < 1.0e-17;
                     return Fieldline::core::point(deltaX, deltaY, exist);
                 }
 
