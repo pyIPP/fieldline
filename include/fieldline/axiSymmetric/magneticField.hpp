@@ -185,11 +185,11 @@ namespace Fieldline {
                         deltaY = tempPoint.z;
                         exist = tempPoint.hit;
                         if(exist){
-                            R = (x+deltaX-1.0+jr)*m_dR+m_Rmin;
-                            z = (y+deltaY-1.0+jz)*m_dz+m_zmin;
+                            R = (x+deltaX+jr)*m_dR+m_Rmin;
+                            z = (y+deltaY+jz)*m_dz+m_zmin;
                             return Fieldline::core::point(R,z,true);
                         }
-			tempCase = 0;
+			            tempCase = 0;
                         if(x+deltaX<1.0){
                             f = (1.0-x)/deltaX;
                             tempCase = 1;

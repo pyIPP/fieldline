@@ -120,6 +120,7 @@ BOOST_PYTHON_MODULE(Fieldline) {
         .def("get_magnetic_flux", &Fieldline::axiSymmetric::magneticField::get_magnetic_flux)
         .def("get_magnetic_field", &Fieldline::axiSymmetric::magneticField::get_magnetic_field)
         .def("write_ASCII_matrix", &Fieldline::axiSymmetric::magneticField::write_ASCII_matrix)
+        .def("get_singularity", &Fieldline::axiSymmetric::magneticField::get_singularity)
         ;
         register_ptr_to_python<Fieldline::axiSymmetric::magneticField *>();
     }
