@@ -52,10 +52,18 @@ void testLine() {
     std::cout << point << '\n';
 }
 
+void testSingularity() {
+    Fieldline::axiSymmetric::magneticField magField(-2.5, 1.65, "psi.txt");
+    Fieldline::core::point pointS = magField.get_singularity(1.6,-0.8);
+    std::cout << "Singularity:" << '\t' <<"R:" << '\t' << pointS.R << '\t' <<"z:" << '\t'<< pointS.z << '\t' <<"exist:" << '\t' <<pointS.hit << '\n';
+}
+
+
 int main() {
     testMagneticField();
     testTarget();
     testLine();
+    testSingularity();
     return EXIT_SUCCESS;
 }
 
