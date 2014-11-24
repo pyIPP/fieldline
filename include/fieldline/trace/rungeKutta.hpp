@@ -56,7 +56,7 @@ namespace Fieldline {
                 }
                 void next(const uint32_t nSteps, const double dphi) {
                     if(!m_initialized) {
-                        throw Fieldline::exceptions::traceNotInitialized;
+                        throw Fieldline::exceptions::traceNotInitialized();
                     }
                     Fieldline::core::magneticField magneticField;
                     double tempR;

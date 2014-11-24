@@ -10,7 +10,7 @@ namespace Fieldline {
                 virtual const char * what() const throw() {
                     return "Trace not initialized.";
                 }
-        }traceNotInitialized;
+        };
     }
 }
 
