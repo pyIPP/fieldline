@@ -83,20 +83,55 @@ BOOST_PYTHON_MODULE(Fieldline) {
 		.def("read_from_file", &Fieldline::core::fieldline::read_from_file)
 		.def("replace_end", &Fieldline::core::fieldline::replace_end)
 		;
+
+        class_<Fieldline::core::stopCriterion, boost::noncopyable>("stopCriterion", no_init)
+            .def("reached", pure_virtual(&Fieldline::core::stopCriterion::reached))
+            ;
+        register_ptr_to_python<Fieldline::core::stopCriterion *>();
 	}
 
 	// Fieldline.axiSymmetric
 	{
-	    object axiSymmetricModule(handle<>(borrowed(PyImport_AddModule("Fieldline.axiSymmetric"))));
-	    scope().attr("axiSymmetric") = axiSymmetricModule;
-	    scope axiSymmetric_scope = axiSymmetricModule;
+	    	object axiSymmetricModule(handle<>(borrowed(PyImport_AddModule("Fieldline.axiSymmetric"))));
+	    	scope().attr("axiSymmetric") = axiSymmetricModule;
+	    	scope axiSymmetric_scope = axiSymmetricModule;
 
-	    class_<Fieldline::axiSymmetric::magneticField>("magneticField")
-		.def(init<double, double, std::string>())
-		.def("get_magnetic_flux", &Fieldline::axiSymmetric::magneticField::get_magnetic_flux)
-		.def("get_magnetic_field", &Fieldline::axiSymmetric::magneticField::get_magnetic_field)
-		.def("write_ASCII_matrix", &Fieldline::axiSymmetric::magneticField::write_ASCII_matrix)
-		;
+	    	class_<Fieldline::axiSymmetric::magneticField>("magneticField")
+			.def(init<double, double, std::string>())
+			.def("get_magnetic_flux", &Fieldline::axiSymmetric::magneticField::get_magnetic_flux)
+			.def("get_magnetic_field", &Fieldline::axiSymmetric::magneticField::get_magnetic_field)
+			.def("write_ASCII_matrix", &Fieldline::axiSymmetric::magneticField::write_ASCII_matrix)
+			;
+            register_ptr_to_python<Fieldline::axiSymmetric::magneticField *>();
+	}
+
+	// Fieldline.trace
+	{
+		object traceModule(handle<>(borrowed(PyImport_AddModule("Fieldline.trace"))));
+		scope().attr("trace") = traceModule;
+		scope trace_scope = traceModule;
+
+        class_<Fieldline::trace::fieldline>("fieldline", init<Fieldline::axiSymmetric::magneticField *, const double, const double, const double, const double, Fieldline::core::stopCriterion* >())
+            ;
+
+        class_<Fieldline::trace::stopCriterionSteps>("stopCriterionSteps", init<uint32_t>())
+            .def("reached", &Fieldline::trace::stopCriterionSteps::reached)
+            ;
+
+        class_<Fieldline::trace::stopCriterionTarget>("stopCriterionTarget", init<Fieldline::core::target, uint32_t>())
+            .def("reached", &Fieldline::trace::stopCriterionTarget::reached)
+            ;
+
+        class_<Fieldline::trace::rungeKutta>("rungeKutta", init<Fieldline::axiSymmetric::magneticField *>())
+            .def("init", &Fieldline::trace::rungeKutta::init)
+            .def("next", &Fieldline::trace::rungeKutta::next)
+            .add_property("R", &Fieldline::trace::rungeKutta::get_R)
+            .add_property("z", &Fieldline::trace::rungeKutta::get_z)
+            .add_property("phi", &Fieldline::trace::rungeKutta::get_phi)
+            .add_property("Btot", &Fieldline::trace::rungeKutta::get_Btot)
+            ;
+
+		
 	}
 
 }
