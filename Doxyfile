@@ -3,6 +3,8 @@ OUTPUT_LANGUAGE=German
 RECURSIVE=YES
 PROJECT_NAME=Fieldline
 INPUT = ./include
+USE_MATHJAX=YES
+
 
 
 
