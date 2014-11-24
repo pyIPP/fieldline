@@ -147,7 +147,7 @@ namespace Fieldline {
                     std::vector<double> x = get_x();
                     std::vector<double> y = get_y();
                     for(uint32_t i = 0; i < x.size()-1; ++i) {
-                        output += (x[i]*x[i] + y[i]*y[i] + m_z[i]*m_z[i]);
+                        output += sqrt(pow(x[i+1]-x[i],2) + pow(y[i+1]-y[i],2) + pow(m_z[i+1]-m_z[i],2));
                     }
                     return fabs(output);
                 }
