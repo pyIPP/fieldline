@@ -234,14 +234,26 @@ namespace Fieldline {
                     file.close();
                 }
 
+                /*! \brief Get the position of the magnetic axis
+                 *
+                 * This function returns the position of the magnetic axis using get_singularity.
+                 */
                 Fieldline::core::point get_magnetic_axis(const double phi = 0.0) const {
                     return this->get_singularity(m_Rmax/2.0 + m_Rmin/2.0, 0.0, phi);
                 }
 
+                /*! \brief Get the position of the lower x-point.
+                 *
+                 * This function returns the position of the lower x-point using get_singularity.
+                 */
                 Fieldline::core::point get_lower_x_point(const double phi = 0.0) const {
                     return this->get_singularity(m_Rmax*0.6 + m_Rmin*0.4, m_zmin*0.8, phi);
                 }
 
+                /*! \brief Get the position of the upper x-point.
+                 *
+                 * This function returns the position of the upper x-point using get_singularity.
+                 */
                 Fieldline::core::point get_upper_x_point(const double phi = 0.0) const {
                     return this->get_singularity(m_Rmax*0.6 + m_Rmin*0.4, m_zmax*0.8, phi);
                 }

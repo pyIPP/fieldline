@@ -57,6 +57,7 @@ BOOST_PYTHON_MODULE(Fieldline) {
         .add_property("Btor", &Fieldline::core::magneticField::Btor, &Fieldline::core::magneticField::Btor)
         .add_property("Bpol", &Fieldline::core::magneticField::Bpol)
         .add_property("Btot", &Fieldline::core::magneticField::Btot)
+        .add_property("toroidalInclination", &Fieldline::core::magneticField::toroidal_inclination)
         ;
 
         class_<Fieldline::core::target>("target", init<std::string>())

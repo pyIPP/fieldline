@@ -59,6 +59,16 @@ namespace Fieldline {
                 double Bz; /*!< Magnetic field component in z direction \f$B_z\f$.*/
                 double Btor; /*!< Magnetic field component in toroidal direction \f$B_{tor}\f$.*/
 
+                /*! \brief Get toroidal inclination of the magnetic field.
+                 *
+                 *  This function returns the toroidal inclination of the magnetic field
+                 *  \f$ \alpha = \pi - \arctan\left(\frac{B_{pol}}{B_{tor}}\right) \f$
+                 *  The angle is zero if only the toroidal field is present.
+                 */
+                double toroidal_inclination() const {
+                    return M_PI - atan2(Bpol(), Btor);
+                }
+
         };
 
         std::ostream & operator<<(std::ostream & ostr, const magneticField & field) {
