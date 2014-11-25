@@ -15,7 +15,7 @@ namespace Fieldline {
             public:
                 /*! \brief Default constructor. */
                 point() : R(0.0), z(0.0), hit(false) {}
-                /*! /brief Constructor.
+                /*! \brief Constructor.
                  *
                  *  Initialized the point with the given \f$(R,z)\f$ coordinate and the information if it got hit.
                  */
