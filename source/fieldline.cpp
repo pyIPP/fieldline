@@ -79,6 +79,7 @@ BOOST_PYTHON_MODULE(Fieldline) {
         .add_property("R", &Fieldline::core::fieldline::get_R_python)
         .add_property("phi", &Fieldline::core::fieldline::get_phi_python)
         .add_property("Btot", &Fieldline::core::fieldline::get_Btot_python)
+        .add_property("turns", &Fieldline::core::fieldline::get_number_of_turns)
         .def("write_to_file", &Fieldline::core::fieldline::write_to_file)
         .def("read_from_file", &Fieldline::core::fieldline::read_from_file)
         .def("replace_end", &Fieldline::core::fieldline::replace_end)

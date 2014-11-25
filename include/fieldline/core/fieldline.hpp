@@ -320,6 +320,15 @@ namespace Fieldline {
                     m_phi[N-1] = m_phi[N-2] + d0/d1*(m_phi[N-1]-m_phi[N-2]);
                 }
 
+                /*! \brief Get the number of toroidal turns of the field line
+                 * 
+                 * This function returns the number of turns of the field line.
+                 * \f$ N = \frac{\Delta \phi}{2 \pi} \f$
+                 */
+                double get_number_of_turns() const {
+                    return std::abs(m_phi[m_phi.size()-1]-m_phi[0])/2.0/M_PI;
+                }
+
 
             protected:
                 std::vector<double> m_R; /*!< \brief R coordinates of the field line */
