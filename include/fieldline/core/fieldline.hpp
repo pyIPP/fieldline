@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string.h>
 #include <fieldline/core/line.hpp>
+#include <algorithm>
 
 #ifdef WITH_PYTHON
     #include <boost/python/list.hpp>
@@ -327,6 +328,27 @@ namespace Fieldline {
                  */
                 double get_number_of_turns() const {
                     return std::abs(m_phi[m_phi.size()-1]-m_phi[0])/2.0/M_PI;
+                }
+
+                /*! \brief Reverse the point on the field line.
+                 *
+                 * This function reverses the order of point on the field line.
+                 */
+                void reverse() {
+                    std::reverse(m_R.begin(), m_R.end());
+                    std::reverse(m_z.begin(), m_z.end());
+                    std::reverse(m_phi.begin(), m_phi.end());
+                    std::reverse(m_Btot.begin(), m_Btot.end());
+                }
+
+                /*! \brief Append field line to current field line
+                 *
+                 * This function append the given field line at the end of the current field line.
+                 */
+                void append(const Fieldline::core::fieldline & rhs) {
+                    for(uint32_t i = 0; i < rhs.size(); ++i) {
+                        push_back(rhs.m_R[i], rhs.m_z[i], rhs.m_phi[i], rhs.m_Btot[i]);
+                    }
                 }
 
 

@@ -148,7 +148,7 @@ BOOST_PYTHON_MODULE(Fieldline) {
         scope().attr("trace") = traceModule;
         scope trace_scope = traceModule;
 
-        class_<Fieldline::trace::fieldline, bases<Fieldline::core::fieldline> >("fieldline", init<Fieldline::axiSymmetric::magneticField *, const double, const double, const double, const double, Fieldline::core::stopCriterion* >())
+        class_<Fieldline::trace::fieldline, bases<Fieldline::core::fieldline> >("fieldline", init<Fieldline::axiSymmetric::magneticField *, const double, const double, const double, const double, Fieldline::core::stopCriterion*, uint32_t>())
             ;
 
         class_<Fieldline::trace::stopCriterionSteps, bases<Fieldline::core::stopCriterion> >("stopCriterionSteps", init<uint32_t>())
