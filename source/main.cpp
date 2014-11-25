@@ -21,9 +21,9 @@ void testMagneticField() {
     file.close();
     Fieldline::trace::stopCriterionSteps stopCriterion(10000);
     Fieldline::trace::fieldline fieldline(&equilibrium, 2.1183, 0.0, 0.0, 0.01, &stopCriterion);
-    fieldline.write_ASCII("fieldlineTest.txt");
+    fieldline.write_to_file("fieldlineTest.txt");
     Fieldline::trace::fieldline fieldline2(&equilibrium, 2.1183, 0.0, 0.0, -0.01, &stopCriterion);
-    fieldline2.write_ASCII("fieldlineTest2.txt");
+    fieldline2.write_to_file("fieldlineTest2.txt");
 
     Fieldline::trace::rungeKutta tracer(&equilibrium);
     tracer.init(2.0, 0.0, 0.0, -0.01);
@@ -42,7 +42,7 @@ void testTarget() {
     Fieldline::axiSymmetric::magneticField equilibrium(-2.5, 1.65, "psi.txt");
     Fieldline::trace::stopCriterionTarget stopCriterion(target, 10000);
     Fieldline::trace::fieldline fieldline(&equilibrium, 2.1183, 0.0, 0.0, -0.01, &stopCriterion);
-    fieldline.write_ASCII("fieldlineTestTarget.txt");
+    fieldline.write_to_file("fieldlineTestTarget.txt");
 }
 
 void testLine() {
@@ -54,7 +54,7 @@ void testLine() {
 
 void testSingularity() {
     Fieldline::axiSymmetric::magneticField magField(-2.5, 1.65, "psi.txt");
-    Fieldline::core::point pointS = magField.get_singularity(1.6,-0.8);
+    Fieldline::core::point pointS = magField.get_singularity(1.6,-0.8, 0.0);
     std::cout << "Singularity:" << '\t' <<"R:" << '\t' << pointS.R << '\t' <<"z:" << '\t'<< pointS.z << '\t' <<"exist:" << '\t' <<pointS.hit << '\n';
 }
 

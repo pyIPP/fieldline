@@ -128,13 +128,20 @@ namespace Fieldline {
                     return Fieldline::core::magneticFlux(PF[0], PF[2], PF[1]);
                 }
 
-                /*! \brief Get second derivative 
+                /*! \brief Get singularity
                  *
-                 *  This function returns the second derivative of the poloidal magnetic flux \f$\psi\f$.
-                 *  This functions needs some overhauling. 
-                 *  Desired way to call get_second_derivative(const double R, const double z, const double phi).
-                */
-                Fieldline::core::point get_secondDerivation(const double x, const double y, const double jr, const double jz) const {
+                 *  This function returns the singular point (x- or o-Point) closest to the specified R,z position.
+                 */
+                Fieldline::core::point get_singularity(const double R, const double z, const double phi) const {
+                    if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
+                        throw Fieldline::exceptions::undefinedMagneticField();
+                    }
+                    double x = (R - m_Rmin)/m_dR;
+                    double y = (z - m_zmin)/m_dz;
+                    uint32_t jr = std::min((uint32_t)std::max((int32_t)0, (int32_t)x-1), m_NR-4);
+                    uint32_t jz = std::min((uint32_t)std::max((int32_t)0, (int32_t)y-1), m_Nz-4);
+                    x -= jr;
+                    y -= jz;
                     double PF[3];
                     double x2 = x*x;
                     double y2 = y*y;
@@ -154,7 +161,6 @@ namespace Fieldline {
                     double DL;
                     double deltaX;
                     double deltaY;
-                    bool exist;
                     double b1(0.0),b2(0.0),b3(0.0);
                     for(uint32_t i = 0; i < 4; ++i) {
                         b1 = b2 = b3 = 0.0;
@@ -190,16 +196,16 @@ namespace Fieldline {
                         b3 += m_a3[i]*(dFdy2[i+1]-dFdy2[0]);
                     }
                     dFdz2 = dFdy2[0] + b1 *x + b2*x2 + b3*x2;
-
                     D = 0.5*(pow(dFdR1,2) + pow(dFdz1,2));
                     DDDR = dFdz1*dFdRdz + dFdR1*dFdR2;
                     DDDz = dFdR1*dFdRdz + dFdz1*dFdz2;
                     DL = -D/(pow(DDDR,2)+pow(DDDz,2));
                     deltaX = DL*DDDR;
                     deltaY = DL*DDDz;
-
-                    exist = pow((deltaX*m_dR),2)+pow((deltaY*m_dz),2) < 1.0e-17;
-                    return Fieldline::core::point(deltaX, deltaY, exist);
+                    if(pow((deltaX*m_dR),2)+pow((deltaY*m_dz),2) < 1.0e-17) {
+                        return Fieldline::core::point(R+deltaX*m_dR, z+deltaY*m_dz, true);
+                    }
+                    return this->get_singularity(R+deltaX*m_dR, z+deltaY*m_dz, 0.0);
                 }
 
                 /*! \brief Get magnetic field
@@ -210,77 +216,6 @@ namespace Fieldline {
                 Fieldline::core::magneticField get_magnetic_field(const double R, const double z, const double phi) const {
                     Fieldline::core::magneticFlux temp = get_magnetic_flux(R,z,phi);
                     return Fieldline::core::magneticField(-(temp.dpsi_dR/m_dz/(2.0*M_PI*R)), temp.dpsi_dz/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
-                }
-
-                /*! \brief Get singularity
-                 *
-                 *  This function returns the singular point (x- or o-Point) closest to the specified R,z position.
-                 *  This function needs some tweaking.
-                 *  Desired function call get_singularity(const double R, const double z, const double phi).
-                 */
-                Fieldline::core::point get_singularity(double R, double z) {
-                    if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
-                        throw Fieldline::exceptions::undefinedMagneticField();
-                    }
-                    double x = (R - m_Rmin)/m_dR;
-                    double y = (z - m_zmin)/m_dz;
-                    uint32_t jr = std::min((uint32_t)std::max((int32_t)0, (int32_t)x-1), m_NR-4);
-                    uint32_t jz = std::min((uint32_t)std::max((int32_t)0, (int32_t)y-1), m_Nz-4);
-                    x -= jr;
-                    y -= jz;
-                    bool stop=false;
-                    double f;
-                    double fY;
-                    uint32_t tempCase = 0;
-                    double deltaX;
-                    double deltaY;
-                    bool exist;
-                    Fieldline::core::point tempPoint;
-                    while(!stop){
-                        tempPoint  = get_secondDerivation(x,y,jr,jz);
-                        deltaX = tempPoint.R;
-                        deltaY = tempPoint.z;
-                        exist = tempPoint.hit;
-                        if(exist){
-                            R = (x+deltaX+jr)*m_dR+m_Rmin;
-                            z = (y+deltaY+jz)*m_dz+m_zmin;
-                            return Fieldline::core::point(R,z,true);
-                        }
-			            tempCase = 0;
-                        if(x+deltaX<1.0){
-                            f = (1.0-x)/deltaX;
-                            tempCase = 1;
-                        }
-                        else if(x+deltaX>2.0){
-                            f = (2.0-x)/deltaX;
-                            tempCase = 2;
-                        }
-                        if(y+deltaY<1.0){
-                            fY = (1.0 - y)/deltaY;
-                            if(tempCase==0 || fY<f){
-                                f = fY;
-                                tempCase = 3;
-                            }
-                        }
-                        else if(y+deltaY>2.0){
-                            fY = (2.0 - y)/deltaY;
-                            if(tempCase==0 || fY<f){
-                                f = fY;
-                                tempCase = 4;
-                            }
-                        }
-                        switch(tempCase) {
-                            case 0: x = x+deltaX; y = y+deltaY; break;
-                            case 1: jr--; x = 2.0; y += f*deltaY;break;
-                            case 2: jr++; x = 1.0; y += f*deltaY;break;
-                            case 3: jz--; y = 2.0; x += f*deltaX;break;
-                            case 4: jz++; y = 1.0; x += f*deltaX;break;
-                        }
-                        if(jz>m_Nz-3 || jz<1 || jr>m_NR-3 || jr<1){
-                            stop = true;
-                        }
-                    }
-                    return Fieldline::core::point(R,z,exist);
                 }
 
                 /*! \brief Write matrix to ASCII file
@@ -305,10 +240,10 @@ namespace Fieldline {
                 double m_R0;        /*!< \brief Major radius of magnetic axis \f$R_0\f$. */
                 uint32_t m_NR;      /*!< \brief Number of poloidal flux points in R direction. */
                 uint32_t m_Nz;      /*!< \brief Number of poloidal flux points in z direction. */
-                double m_Rmin;      /*!< \brief Minimum major radius $R_{min}$ of the poloidal flux matrix. */
-                double m_Rmax;      /*!< \brief Maximum major radius $R_{max}$ of the poloidal flux matrix. */
-                double m_zmin;      /*!< \brief Minimum vertical position $z_{min}$ of the poloidal flux matrix. */
-                double m_zmax;      /*!< \brief Maximum vertical position $z_{max}$ of the poloidal flux matrix. */
+                double m_Rmin;      /*!< \brief Minimum major radius \f$R_{min}\f$ of the poloidal flux matrix. */
+                double m_Rmax;      /*!< \brief Maximum major radius \f$R_{max}\f$ of the poloidal flux matrix. */
+                double m_zmin;      /*!< \brief Minimum vertical position \f$z_{min}\f$ of the poloidal flux matrix. */
+                double m_zmax;      /*!< \brief Maximum vertical position \f$z_{max}\f$ of the poloidal flux matrix. */
                 double m_dR;        /*!< \brief Spatial distance \f$\Delta R\f$ between points of the poloidal flux matrix in R direction. */
                 double m_dz;        /*!< \brief Spatial distance \f$\Delta z\f$ between points of the poloidal flux matrix in z direction. */
                 boost::numeric::ublas::matrix<double> m_psi;    /*!< \brief Poloidal flux matrix \f$\psi\f$. */

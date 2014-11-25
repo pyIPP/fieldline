@@ -24,7 +24,7 @@ namespace Fieldline {
                  *  \f$\mathrm{d}\phi\f$ is specified to give the step width and the trace direction.
                  *  A pointer to an instance derived from Fieldline::core::stopCriterion is required. 
                  *  The stopCriterion can be any arbitrary criterion, e.g. field line length, target intersection ...
-                 *  \param equilibrium Start position \f$R\f$ of the field line trace.
+                 *  \param equilibrium Pointer to the magnetic field instance.
                  *  \param R Start position \f$R\f$ of the field line trace.
                  *  \param z Start position \f$z\f$ of the field line trace.
                  *  \param phi Toroidal angle \f$\phi\f$ where the field line trace starts.
