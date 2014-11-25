@@ -8,5 +8,6 @@
 #include <fieldline/core/target.hpp>
 #include <fieldline/core/point.hpp>
 #include <fieldline/core/line.hpp>
+#include <fieldline/core/rhoPoloidal.hpp>
 
 #endif

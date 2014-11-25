@@ -89,6 +89,12 @@ BOOST_PYTHON_MODULE(Fieldline) {
             .def("reached", pure_virtual(&Fieldline::core::stopCriterion::reached))
             ;
         register_ptr_to_python<Fieldline::core::stopCriterion *>();
+
+        class_<Fieldline::core::rhoPoloidal>("rhoPoloidal", init<double, double>())
+            .def(init<Fieldline::core::rhoPoloidal>())
+            .def("getRhoPoloidal", &Fieldline::core::rhoPoloidal::get_rho_poloidal)
+            .def("getPoloidalFlux", &Fieldline::core::rhoPoloidal::get_poloidal_flux)
+            ;
     }
 
     // Fieldline.exceptions
