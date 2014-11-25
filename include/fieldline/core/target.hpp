@@ -11,31 +11,35 @@
     #include <boost/python/list.hpp>
 #endif 
 
-/*! Class containing the target contour.
-    The contour of the target is represented in the poloidal plane as a list of R,z values.
-*/
 
 namespace Fieldline {
     namespace core {
+        /*! \brief Class containing the target contour.
+         *
+         *  The contour of the target is represented in the poloidal plane as a list of R,z values.
+         */
         class target {
             public:
-                /*! Constructor
-                    This constructor sets the target according to the given R,z values.
-                */
+                /*! \brief Constructor
+                 *
+                 *  This constructor sets the target according to the given R,z values.
+                 */
                 target(const std::vector<double> & R, const std::vector<double> & z) : m_R(R), m_z(z) {}
-                /*! Constructor
-                    This constructor loads the target contour from the specified location.
-                */
+                /*! \brief Constructor
+                 *
+                 *  This constructor loads the target contour from the specified location.
+                 */
                 target(const std::string & filename) : m_R(), m_z() {
                     load_from_file(filename);
                 }
-                /*! Copy constructor */
+                /*! \brief Copy constructor */
                 target(const target & rhs) : m_R(rhs.m_R), m_z(rhs.m_z) {}
 #ifdef WITH_PYTHON
-                /*! Python constructor
-                    This constructor sets the target according to the given R,z values.
-                    It is only intended to interface with python, do not use this constructor from within C++.
-                */
+                /*! \brief Python constructor
+                 *
+                 *  This constructor sets the target according to the given R,z values.
+                 *  It is only intended to interface with python, do not use this constructor from within C++.
+                 */
                 target(const boost::python::list & R, const boost::python::list & z) : m_R(), m_z() {
                     uint32_t N = boost::python::len(R);
                     m_R.resize(N);
@@ -46,11 +50,12 @@ namespace Fieldline {
                     }
                 }
 #endif                
-                /*! Destructor */
+                /*! \brief Destructor */
                 virtual ~target() {}
-                /*! Assignment operator
-                    Copies the target contour from the given instance.
-                */
+                /*! \brief Assignment operator
+                 *
+                 *  Copies the target contour from the given instance.
+                 */
                 target & operator=(const target & rhs) {
                     if(this != &rhs) {
                         m_R = rhs.m_R;
@@ -58,13 +63,15 @@ namespace Fieldline {
                     }
                     return *this;
                 }
-                /*! Target size.
-                    Returns the number of points forming the target contour.
-                */
+                /*! \brief Target size.
+                 *
+                 *  Returns the number of points forming the target contour.
+                 */
                 uint32_t size() const { return m_R.size(); }
-                /*! Save target contour to file.
-                    This function saves the target contour to an ASCII file.
-                */
+                /*! \brief Save target contour to file.
+                 *
+                 *  This function saves the target contour to an ASCII file.
+                 */
                 void save_to_file(const std::string & filename) const {
                     std::fstream file(filename.c_str(), std::ios::out);
                     auto R = m_R.cbegin();
@@ -76,8 +83,9 @@ namespace Fieldline {
                     file.close();
                 }
 
-                /*! Load target contour from file.
-                    This functions load the target contour from the specified ASCII file.
+                /*! \brief Load target contour from file.
+                 *
+                 *  This functions load the target contour from the specified ASCII file.
                 */
                 void load_from_file(const std::string & filename) {
                     std::fstream file(filename.c_str(), std::ios::in);
@@ -93,11 +101,12 @@ namespace Fieldline {
                     file.close();
                 }
 
-                /*! Get field line intersection with the target.
-                    This function calculates the intersection of the field line with the target contour.
-                    If no intersection is found the origin is returned with hit set to false.
-                    If two or more intersections are found the one closest to the beginning of the given line is returned.
-                */
+                /*! \brief Get field line intersection with the target.
+                 *
+                 *  This function calculates the intersection of the field line with the target contour.
+                 *  If no intersection is found the origin is returned with hit set to false.
+                 *  If two or more intersections are found the one closest to the beginning of the given line is returned.
+                 */
                 Fieldline::core::point get_intersection(const Fieldline::core::line & line) const {
                     Fieldline::core::point temp;
                     std::vector<Fieldline::core::point> points;
@@ -125,10 +134,11 @@ namespace Fieldline {
                 }
 
 #ifdef WITH_PYTHON
-                /*! Return R values as python list.
-                    This function returns the R values of the target contour as a python list.
-                    This function is only intended as an interface to python, do not use this function from within C++.
-                */
+                /*! \brief Return R values as python list.
+                 *
+                 *  This function returns the R values of the target contour as a python list.
+                 *  This function is only intended as an interface to python, do not use this function from within C++.
+                 */
                 boost::python::list get_R_python() const {
                     boost::python::list output;
                     for(auto iter = m_R.cbegin(); iter != m_R.cend(); ++iter) {
@@ -137,10 +147,11 @@ namespace Fieldline {
                     return output;
                 }
 
-                /*! Return z values as python list.
-                    This function returns the z values of the target contour as a python list.
-                    This function is only intended as an interface to python, do not use this function from within C++.
-                */
+                /*! \brief Return z values as python list.
+                 *
+                 *  This function returns the z values of the target contour as a python list.
+                 *  This function is only intended as an interface to python, do not use this function from within C++.
+                 */
                 boost::python::list get_z_python() const {
                     boost::python::list output;
                     for(auto iter = m_z.cbegin(); iter != m_z.cend(); ++iter) {
@@ -152,10 +163,8 @@ namespace Fieldline {
 #endif                
 
             protected:
-                /*! R values of the target contour. */
-                std::vector<double> m_R;
-                /*! z values of the target contour. */
-                std::vector<double> m_z;
+                std::vector<double> m_R; /*!< \brief R values of the target contour. */
+                std::vector<double> m_z; /*!< \brief z values of the target contour. */
         };
     }
 }

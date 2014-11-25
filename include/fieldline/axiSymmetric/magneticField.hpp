@@ -14,67 +14,74 @@
 #include <fstream>
 #include <string.h>
 
-/*! Class representing an axial symmetric magnetic equilibrium.
-    This class represents an axial symmetric magnetic equilibrium.
-    The equilibrium information is stored as a rectangular grid of the poloidal magnetic flux \f$\psi\f$.
-    In addition the toroidal magnetic field \f$B_{tor}\f$ and the major radius of the magnetic axis \f$R_0\f$ is stored.
-*/
 
 namespace Fieldline {
     namespace axiSymmetric {
+        /*! \brief Class representing an axial symmetric magnetic equilibrium.
+         *
+         *  This class represents an axial symmetric magnetic equilibrium.
+         *  The equilibrium information is stored as a rectangular grid of the poloidal magnetic flux \f$\psi\f$.
+         *  In addition the toroidal magnetic field \f$B_{tor}\f$ and the major radius of the magnetic axis \f$R_0\f$ is stored.
+         */
         class magneticField {
             private: 
                 const double m_a1[3] = {3.0,  -1.5,    1.0/3.0};
                 const double m_a2[3] = {-2.5,   2.0,   -0.5};
                 const double m_a3[3] = {0.5,  -0.5,    1.0/6.0};
             public:
-                /*! Default constructor
-                    The default constructor leaves the class empty.
-                */
+                /*! \brief Default constructor
+                 *
+                 *  The default constructor leaves the class empty.
+                 */
                 magneticField() {}
-                /*! Constructor
-                    The constructor initializes the poloidal magnetic flux matrix and the corresponding information, 
-                    such as spatial extent and the toroidal magnetic field \f$B_{tor}\f$ and the major radius of the magnetic axis
-                    \f$R_0\f$.
-                */
+                /*! \brief Constructor
+                 *
+                 *  The constructor initializes the poloidal magnetic flux matrix and the corresponding information, 
+                 *  such as spatial extent and the toroidal magnetic field \f$B_{tor}\f$ and the major radius of the magnetic axis
+                 *  \f$R_0\f$.
+                 */
                 magneticField(const double Btor, const double R0, const double Rmin, const double Rmax, 
                     const double zmin, const double zmax, const boost::numeric::ublas::matrix<double> psi) :
                         m_Btor(Btor), m_R0(R0), m_Rmin(Rmin), m_Rmax(Rmax), m_zmin(zmin), m_zmax(zmax),
                         m_dR((Rmax-Rmin)/(psi.size1()-1)), m_dz((zmax-zmin)/(psi.size2()-1)), m_psi(psi) {
                 }
-                /*! Constructor
-                    The constructor reads the equilibrium from file.
-                    In addition the constructor requires the information about the toroidal magnetic field \f$B_{tor}\f$ and the 
-                    major radius of the magnetic axis \f$R_0\f$
-                */
+                /*! \brief Constructor
+                 *
+                 *  The constructor reads the equilibrium from file.
+                 *  In addition the constructor requires the information about the toroidal magnetic field \f$B_{tor}\f$ and the 
+                 *  major radius of the magnetic axis \f$R_0\f$
+                 */
                 magneticField(const double Btor, const double R0, const std::string & filename) : m_Btor(Btor), m_R0(R0) {
                     std::fstream file(filename.c_str(), std::ios::in);
                     load_from_file(file);
                 }
-                /*! Constructor
-                    The constructor reads the equilibrium from a file instance.
-                    In addition the constructor requires the information about the toroidal magnetic field \f$B_{tor}\f$ and the 
-                    major radius of the magnetic axis \f$R_0\f$
-                */
+                /*! \brief Constructor
+                 *
+                 *  The constructor reads the equilibrium from a file instance.
+                 *  In addition the constructor requires the information about the toroidal magnetic field \f$B_{tor}\f$ and the 
+                 *  major radius of the magnetic axis \f$R_0\f$
+                 */
                 magneticField(const double Btor, const double R0, std::fstream & file) : m_Btor(Btor), m_R0(R0) {
                     load_from_file(file);
                 }
-                /*! Copy constructor
-                    Copies the equilibrium from the given instance to the new instance.
-                */
+                /*! \brief Copy constructor
+                 *
+                 *  Copies the equilibrium from the given instance to the new instance.
+                 */
                 magneticField(const magneticField & rhs) : m_Btor(rhs.m_Btor), m_R0(rhs.m_R0), m_NR(rhs.m_NR), m_Nz(rhs.m_Nz),
                     m_Rmin(rhs.m_Rmin), m_Rmax(rhs.m_Rmax), m_zmin(rhs.m_zmin), m_zmax(rhs.m_zmax), m_dR(rhs.m_dR), m_dz(rhs.m_dz), m_psi(rhs.m_psi) {
                 }
 
-                /*! Destructor */
+                /*! \brief Destructor */
                 virtual ~magneticField() {}
 
-                /*! Get the poloidal magnetic flux.
-                    This function returns the interpolates magnetic flux at the specified position R,z at the toroidal angle \f$\psi\f$.
-                    The toroidal angle is a dummy in this class, but is specified for further non axial symmetric cases derived from this class.
-                    The function returns the poloidal magnetic flux \f$\psi\f$ together with its derivatives \f$\frac{\partial \psi}{\partial R}\f$ and
-                    \f$\frac{\partial \psi}{\partial z}\f$
-                */
+                /*! \brief Get the poloidal magnetic flux.
+                 *
+                 *  This function returns the interpolates magnetic flux at the specified position R,z at the toroidal angle \f$\psi\f$.
+                 *  The toroidal angle is a dummy in this class, but is specified for further non axial symmetric cases derived from this class.
+                 *  The function returns the poloidal magnetic flux \f$\psi\f$ together with its derivatives \f$\frac{\partial \psi}{\partial R}\f$ and
+                 *  \f$\frac{\partial \psi}{\partial z}\f$
+                 */
                 Fieldline::core::magneticFlux get_magnetic_flux(const double R, const double z, const double phi) const {
                     if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
                         throw Fieldline::exceptions::undefinedMagneticField();
@@ -121,10 +128,11 @@ namespace Fieldline {
                     return Fieldline::core::magneticFlux(PF[0], PF[2], PF[1]);
                 }
 
-                /*! Get second derivative 
-                    This function returns the second derivative of the poloidal magnetic flux \f$\psi\f$.
-                    This functions needs some overhauling. 
-                    Desired way to call get_second_derivative(const double R, const double z, const double phi).
+                /*! \brief Get second derivative 
+                 *
+                 *  This function returns the second derivative of the poloidal magnetic flux \f$\psi\f$.
+                 *  This functions needs some overhauling. 
+                 *  Desired way to call get_second_derivative(const double R, const double z, const double phi).
                 */
                 Fieldline::core::point get_secondDerivation(const double x, const double y, const double jr, const double jz) const {
                     double PF[3];
@@ -194,20 +202,22 @@ namespace Fieldline {
                     return Fieldline::core::point(deltaX, deltaY, exist);
                 }
 
-                /*! Get magnetic field
-                    This function returns the magnetic field at the position R,z at the toroidal angle \f$\phi\f$.
-                    \f$ \mathbf{B} = (B_R, B_z, B_{tor})\f$ 
-                */
+                /*! \brief Get magnetic field
+                 *
+                 *  This function returns the magnetic field at the position R,z at the toroidal angle \f$\phi\f$.
+                 *  \f$ \mathbf{B} = (B_R, B_z, B_{tor})\f$ 
+                 */
                 Fieldline::core::magneticField get_magnetic_field(const double R, const double z, const double phi) const {
                     Fieldline::core::magneticFlux temp = get_magnetic_flux(R,z,phi);
                     return Fieldline::core::magneticField(-(temp.dpsi_dR/m_dz/(2.0*M_PI*R)), temp.dpsi_dz/m_dR/(2.0*M_PI*R), m_R0/R*m_Btor);
                 }
 
-                /*! Get singularity
-                    This function returns the singular point (x- or o-Point) closest to the specified R,z position.
-                    This function needs some tweaking.
-                    Desired function call get_singularity(const double R, const double z, const double phi).
-                */
+                /*! \brief Get singularity
+                 *
+                 *  This function returns the singular point (x- or o-Point) closest to the specified R,z position.
+                 *  This function needs some tweaking.
+                 *  Desired function call get_singularity(const double R, const double z, const double phi).
+                 */
                 Fieldline::core::point get_singularity(double R, double z) {
                     if(R < m_Rmin || R > m_Rmax || z < m_zmin || z > m_zmax) {
                         throw Fieldline::exceptions::undefinedMagneticField();
@@ -273,10 +283,11 @@ namespace Fieldline {
                     return Fieldline::core::point(R,z,exist);
                 }
 
-                /*! Write matrix to ASCII file
-                    This function writes the poloidal flux matrix to an ASCII file.
-                    This is helpful if one wants to check if the matrix is read in correcly.
-                */
+                /*! \brief Write matrix to ASCII file
+                 *
+                 *  This function writes the poloidal flux matrix to an ASCII file.
+                 *  This is helpful if one wants to check if the matrix is read in correcly.
+                 */
                 void write_ASCII_matrix(const std::string & filename) const {
                     std::fstream file(filename.c_str(), std::ios::out);
                     for(uint32_t i = 0; i < m_NR; ++i){ 
@@ -290,32 +301,23 @@ namespace Fieldline {
 
 
             protected:
-                /*! Toroidal magnetic field \f$B_{tor}\f$. */
-                double m_Btor;
-                /*! Major radius of magnetic axis \f$R_0\f$. */
-                double m_R0;
-                /*! Number of poloidal flux points in R direction. */
-                uint32_t m_NR;
-                /*! Number of poloidal flux points in z direction. */
-                uint32_t m_Nz;
-                /*! Minimum major radius $R_{min}$ of the poloidal flux matrix. */
-                double m_Rmin;
-                /*! Maximum major radius $R_{max}$ of the poloidal flux matrix. */
-                double m_Rmax;
-                /*! Minimum vertical position $z_{min}$ of the poloidal flux matrix. */
-                double m_zmin;
-                /*! Maximum vertical position $z_{max}$ of the poloidal flux matrix. */
-                double m_zmax;
-                /*! Spatial distance \f$\Delta R\f$ between points of the poloidal flux matrix in R direction. */
-                double m_dR;
-                /*! Spatial distance \f$\Delta z\f$ between points of the poloidal flux matrix in z direction. */
-                double m_dz;
-                /*! Poloidal flux matrix \f$\psi\f$. */
-                boost::numeric::ublas::matrix<double> m_psi;
-                /*! Load poloidal flux matrix from file.
-                    This file reads the poloidal flux matrix from file.
-                    The file format is that of the FORTRAN code.
-                */
+                double m_Btor;      /*!< \brief Toroidal magnetic field \f$B_{tor}\f$. */
+                double m_R0;        /*!< \brief Major radius of magnetic axis \f$R_0\f$. */
+                uint32_t m_NR;      /*!< \brief Number of poloidal flux points in R direction. */
+                uint32_t m_Nz;      /*!< \brief Number of poloidal flux points in z direction. */
+                double m_Rmin;      /*!< \brief Minimum major radius $R_{min}$ of the poloidal flux matrix. */
+                double m_Rmax;      /*!< \brief Maximum major radius $R_{max}$ of the poloidal flux matrix. */
+                double m_zmin;      /*!< \brief Minimum vertical position $z_{min}$ of the poloidal flux matrix. */
+                double m_zmax;      /*!< \brief Maximum vertical position $z_{max}$ of the poloidal flux matrix. */
+                double m_dR;        /*!< \brief Spatial distance \f$\Delta R\f$ between points of the poloidal flux matrix in R direction. */
+                double m_dz;        /*!< \brief Spatial distance \f$\Delta z\f$ between points of the poloidal flux matrix in z direction. */
+                boost::numeric::ublas::matrix<double> m_psi;    /*!< \brief Poloidal flux matrix \f$\psi\f$. */
+
+                /*! \brief Load poloidal flux matrix from file.
+                 *
+                 *  This file reads the poloidal flux matrix from file.
+                 *  The file format is that of the FORTRAN code.
+                 */
                 void load_from_file(std::fstream & file) {
                     std::string temp;
                     file >> m_NR >> m_Nz;

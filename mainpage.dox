@@ -1,0 +1,5 @@
+/*! \mainpage Field Line Tracing Tool
+ *
+ * Fieldline is a C++ field line tracing tool. It is derived from a FORTRAN implementation.
+ * The code is written object oriented and has a python interface for simple usage.
+ */
