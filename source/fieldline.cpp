@@ -9,6 +9,11 @@
 class DummyCore{};
 
 using namespace boost::python;
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(axiSymmetric_magneticField_get_lower_x_point, Fieldline::axiSymmetric::magneticField::get_lower_x_point, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(axiSymmetric_magneticField_get_upper_x_point, Fieldline::axiSymmetric::magneticField::get_upper_x_point, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(axiSymmetric_magneticField_get_magnetic_axis, Fieldline::axiSymmetric::magneticField::get_magnetic_axis, 0, 1)
+
 BOOST_PYTHON_MODULE(Fieldline) {
     // Fieldline.core
     {
@@ -122,12 +127,16 @@ BOOST_PYTHON_MODULE(Fieldline) {
         scope().attr("axiSymmetric") = axiSymmetricModule;
         scope axiSymmetric_scope = axiSymmetricModule;
 
+
         class_<Fieldline::axiSymmetric::magneticField>("magneticField")
         .def(init<double, double, std::string>())
         .def("get_magnetic_flux", &Fieldline::axiSymmetric::magneticField::get_magnetic_flux)
         .def("get_magnetic_field", &Fieldline::axiSymmetric::magneticField::get_magnetic_field)
         .def("write_ASCII_matrix", &Fieldline::axiSymmetric::magneticField::write_ASCII_matrix)
         .def("get_singularity", &Fieldline::axiSymmetric::magneticField::get_singularity)
+        .def("get_magnetic_axis", &Fieldline::axiSymmetric::magneticField::get_magnetic_axis, axiSymmetric_magneticField_get_magnetic_axis(args("phi")))
+        .def("get_lower_x_point", &Fieldline::axiSymmetric::magneticField::get_lower_x_point, axiSymmetric_magneticField_get_lower_x_point(args("phi")))
+        .def("get_upper_x_point", &Fieldline::axiSymmetric::magneticField::get_upper_x_point, axiSymmetric_magneticField_get_upper_x_point(args("phi")))
         ;
         register_ptr_to_python<Fieldline::axiSymmetric::magneticField *>();
     }

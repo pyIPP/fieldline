@@ -234,6 +234,18 @@ namespace Fieldline {
                     file.close();
                 }
 
+                Fieldline::core::point get_magnetic_axis(const double phi = 0.0) const {
+                    return this->get_singularity(m_Rmax/2.0 + m_Rmin/2.0, 0.0, phi);
+                }
+
+                Fieldline::core::point get_lower_x_point(const double phi = 0.0) const {
+                    return this->get_singularity(m_Rmax*0.6 + m_Rmin*0.4, m_zmin*0.8, phi);
+                }
+
+                Fieldline::core::point get_upper_x_point(const double phi = 0.0) const {
+                    return this->get_singularity(m_Rmax*0.6 + m_Rmin*0.4, m_zmax*0.8, phi);
+                }
+
 
             protected:
                 double m_Btor;      /*!< \brief Toroidal magnetic field \f$B_{tor}\f$. */
