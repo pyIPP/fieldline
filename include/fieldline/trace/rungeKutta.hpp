@@ -6,8 +6,15 @@
 #include <fieldline/exceptions.hpp>
 #include <fieldline/axiSymmetric.hpp>
 
+
 namespace Fieldline {
     namespace trace {
+        /*! Fifth order Runge Kutta field line tracer
+            This class implements the fifth order Runge Kutta method to perform field line tracing.
+            The class requires a Fieldline::axiSymmetric::magneticField instance or an instance derived from 
+            that class.
+            A starting point can be set and the field line can be traced stepwise.
+        */
         class rungeKutta {
             private:
                 const double m_c[4] = {1.0/3.0, 2.0/3.0, 1.0/3.0, 1.0/6.0};
@@ -15,9 +22,17 @@ namespace Fieldline {
                 const double m_cm[4] = {-3.0/8.0, 3.7e1/2.4e1, -5.9e1/2.4e1,5.5e1/2.4e1};
                 const double m_fm[5] = {-1.9/7.2e1, 5.3/3.6e1,-1.1/3.0, 1.615e1/1.8e1, 2.51e1/7.2e1};
             public:
+                /*! Constructor
+                    The constructor requires a pointer to a Fieldline::axisSymmetric::magneticField instance or an instance derived from it.
+                */
                 rungeKutta(Fieldline::axiSymmetric::magneticField * magneticField) : m_magneticField(magneticField), m_initialized(false) {}
+                /*! Destructor */
                 virtual ~rungeKutta() {}
 
+                /*! Init field line trace
+                    This function initializes the field line trace at the specified position R,z at the toroidal angle \f$\phi\f$.
+                    The direction and step size of the field line trace is specified by \f$\mathrm{d}\phi\f$.
+                */
                 void init(const double R, const double z, const double phi, const double dphi) {
                     Fieldline::core::magneticField magneticField;
                     double qR[4];
@@ -54,6 +69,13 @@ namespace Fieldline {
                     m_Btot = magneticField.Btot();
                     m_initialized = true;
                 }
+
+                /*! Next step
+                    This function calculates the next step on the field line trace.
+                    nSteps specifies the number of steps to perform with a step width of \f$\mathrm{d}\phi\f$.
+                    If the trace is not initialized via init a Fieldline::exceptions::traceNotInitialized instance is 
+                    thrown.
+                */
                 void next(const uint32_t nSteps, const double dphi) {
                     if(!m_initialized) {
                         throw Fieldline::exceptions::traceNotInitialized();
@@ -84,21 +106,33 @@ namespace Fieldline {
                     magneticField = m_magneticField->get_magnetic_field(m_R, m_z, m_phi);
                     m_Btot = magneticField.Btot();
                 }
+                /*! Get current R position. */
                 double get_R() const { return m_R; };
+                /*! Get current z position. */
                 double get_z() const { return m_z; };
+                /*! Get current toroidal angle \f$\phi\f$.*/
                 double get_phi() const { return m_phi; };
+                /*! Get total magnetic field \f$B_{tot}\f$ at current location. */
                 double get_Btot() const { return m_Btot; };
 
 
 
             protected:
+                /*! Pointer to the magnetic field. */
                 Fieldline::axiSymmetric::magneticField * m_magneticField;
+                /*! Indicator if field line trace is initialized. */
                 bool m_initialized;
+                /*! Current toroidal angle \f$\phi\f$. */
                 double m_phi;
+                /*! Current position R. */
                 double m_R;
+                /*! Current position z. */
                 double m_z;
+                /*! Previous derivatives in R direction. Needed for RK5. */
                 double m_dR[5];
+                /*! Previous derivatives in z direction. Needed for RK5. */
                 double m_dz[5];
+                /*! Total magnetic field \f$B_{tot}\f$ at current position. */
                 double m_Btot;
 
 
