@@ -45,6 +45,26 @@ namespace Fieldline {
                         m_Btor(Btor), m_R0(R0), m_Rmin(Rmin), m_Rmax(Rmax), m_zmin(zmin), m_zmax(zmax),
                         m_dR((Rmax-Rmin)/(psi.size1()-1)), m_dz((zmax-zmin)/(psi.size2()-1)), m_psi(psi) {
                 }
+                /*! \brief Python constructor
+                 *
+                 *  The constructor initializes the poloidal magnetic flux matrix and the corresponding information, 
+                 *  such as spatial extent and the toroidal magnetic field \f$B_{tor}\f$ and the major radius of the magnetic axis
+                 *  \f$R_0\f$.
+                 *  This constructor is intended as python interface.
+                 *  Do not use this constructor from within C++.
+                 */
+                magneticField(const double Btor, const double R0, const double Rmin, const double Rmax,
+                    const double zmin, const double zmax, const uint32_t NR, const uint32_t Nz, const boost::python::list & psi):
+                        m_Btor(Btor), m_R0(R0), m_Rmin(Rmin), m_Rmax(Rmax), m_zmin(zmin), m_zmax(zmax),
+                        m_dR((Rmax-Rmin)/(NR-1)), m_dz((zmax-zmin)/(Nz-1)), m_psi(NR,Nz) {
+                    uint32_t i = 0;
+                    for(uint32_t x = 0; x < NR; ++x) {
+                        for(uint32_t y = 0; y < Nz; ++y, ++i) {
+                            m_psi(x,y) = boost::python::extract<double>(psi[i]);
+                        }
+                    }           
+                }
+
                 /*! \brief Constructor
                  *
                  *  The constructor reads the equilibrium from file.
